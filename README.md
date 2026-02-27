@@ -15,6 +15,7 @@ npm install
 ```
 npm run dev
 ```
+
 The app will be available at the URL printed in the terminal (typically http://localhost:5173).
 
 ### Build for production
@@ -51,8 +52,16 @@ npm run test:run
 
 ## Linting
 
-To check code style and find lint errors:
-
 ```
 npm run lint
 ```
+
+---
+
+## Trade-offs
+
+### Chart library: lightweight-charts
+
+The candlestick chart uses [lightweight-charts](https://github.com/tradingview/lightweight-charts) by TradingView. It was chosen for its native candlestick support, tiny bundle (~50 KB), and its `update()` API which patches a single bar in-place rather than re-rendering the whole chart on every WebSocket tick.
+
+The main trade-off is that it is not a React-native library — it exposes an imperative, instance-based API that lives outside React's render cycle. To bridge this gap, a custom `useCandleChart` hook was created to manage the chart lifecycle (init, resize, cleanup) through refs, and expose a clean declarative-friendly API (`setCandles`, `updateCandle`) for the consuming component to drive the chart without touching the underlying instance directly.
