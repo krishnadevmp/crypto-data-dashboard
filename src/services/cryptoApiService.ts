@@ -7,7 +7,7 @@
  */
 
 import type { Candle, CryptoPair, OrderBook } from "./apiTypes";
-import { createCache } from "./ApiCache";
+import { createCache } from "./apiCache";
 
 // ---------------------------------------------------------------------------
 // Configuration
