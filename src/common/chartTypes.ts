@@ -10,7 +10,7 @@ import type { Candle } from "../services/apiTypes";
  * Options accepted by the useCandleChart hook.
  *
  * The hook is intentionally data-agnostic — it only controls chart
- * initialisation and appearance. All data loading (REST + WebSocket)
+ * initialization and appearance. All data loading (REST + WebSocket)
  * is the responsibility of the consuming component, which drives the
  * chart via the `setCandles` and `updateCandle` methods on the return value.
  */

@@ -19,10 +19,6 @@ import {
   toVolumeData,
 } from "./chartDataMapper";
 
-// ---------------------------------------------------------------------------
-// Default chart appearance — dark theme matching a typical crypto exchange UI
-// ---------------------------------------------------------------------------
-
 const DEFAULT_CHART_OPTIONS: DeepPartial<ChartOptions> = {
   layout: {
     background: { type: ColorType.Solid, color: "#0f172a" },
@@ -49,7 +45,7 @@ const DEFAULT_CHART_OPTIONS: DeepPartial<ChartOptions> = {
  * useCandleChart
  *
  * A pure chart-control hook. It owns ONLY the lightweight-charts instance
- * lifecycle — initialisation, resize, and cleanup. It has no knowledge of
+ * lifecycle — initialization, resize, and cleanup. It has no knowledge of
  * where data comes from.
  *
  * The consuming component is responsible for:
@@ -76,9 +72,7 @@ export function useCandleChart({
   // Exposed so the consuming component can gate data calls on chart readiness.
   const [isReady, setIsReady] = useState(false);
 
-  // ---------------------------------------------------------------------------
   // 1. Chart initialization — runs once on mount, cleans up on unmount
-  // ---------------------------------------------------------------------------
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -134,9 +128,7 @@ export function useCandleChart({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ---------------------------------------------------------------------------
   // 2. Auto-resize — observes the container and keeps the chart in sync
-  // ---------------------------------------------------------------------------
   useEffect(() => {
     if (!autoResize || !containerRef.current || !chartRef.current) return;
 
@@ -151,11 +143,12 @@ export function useCandleChart({
     return () => observer.disconnect();
   }, [autoResize, isReady]);
 
-  // ---------------------------------------------------------------------------
-  // 3. Public chart-control API
-  //    All functions are stable (useCallback with no deps) so they are safe
-  //    to include in dependency arrays in the consuming component.
-  // ---------------------------------------------------------------------------
+  /**
+   * Public chart-control API
+   *
+   * All functions are stable (useCallback with no deps) so they are safe
+   * to include in dependency arrays in the consuming component.
+   */
 
   /**
    * Replace the full candle dataset.
