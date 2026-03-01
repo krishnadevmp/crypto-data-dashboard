@@ -14,7 +14,7 @@ import {
 } from "./DashboardTypes";
 
 /**
- * Dashboard — mobile-first, flex-only responsive layout.
+ * Dashboard
  *
  * Breakpoints:
  *  < sm  (< 640px)   header: logo + selects stack vertically (flex-col)
