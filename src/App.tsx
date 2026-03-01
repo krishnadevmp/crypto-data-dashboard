@@ -1,13 +1,8 @@
 import "./App.css";
-import CandleChart from "./domain/CandleChart";
+import Dashboard from "./domain/Dashboard";
 
 function App() {
-  return (
-    <>
-      <h1>Crypto Data Dashboard</h1>
-      <CandleChart pair="BTC-USDT" />
-    </>
-  );
+  return <Dashboard />;
 }
 
 export default App;
