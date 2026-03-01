@@ -69,19 +69,12 @@ export function CandleChart({ pair }: CandleChartProps) {
   }, [pair, isReady, setCandles]);
 
   return (
-    <>
-      {/* ── Header ───────────────────────────────────────────────────────── */}
-      <div>
-        <span>{pair}</span>
-      </div>
-
-      {/* ── Chart canvas + overlays ───────────────────────────────────────── */}
-      <div
-        ref={containerRef}
-        role="img"
-        aria-label={`Candlestick chart for ${pair}`}
-      />
-    </>
+    <div
+      className="h-[420px] sm:h-[500px] lg:h-auto lg:min-h-[520px]"
+      ref={containerRef}
+      role="img"
+      aria-label={`Candlestick chart for ${pair}`}
+    />
   );
 }
 
