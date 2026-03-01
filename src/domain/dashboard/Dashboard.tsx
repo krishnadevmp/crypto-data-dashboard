@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { Select } from "../common/Select";
-import { CandleChart } from "./CandleChart";
-import { OrderBook } from "./Orderbook";
-import type { CryptoPair } from "../services/apiTypes";
+import { Select } from "../../common/Select";
+import { CryptoCandleChart } from "../cryptoCandleChart/CryptoCandleChart";
+import { OrderBook } from "../orderbook/Orderbook";
+import type { CryptoPair } from "../../services/apiTypes";
 import {
   PAIR_OPTIONS,
   STREAM_OPTIONS,
   type StreamMode,
-} from "./DashboardTypes";
-import { useCryptoWebSocket } from "../common/useCryptoWebSocket";
+} from "./dashboardTypes";
+import { useCryptoWebSocket } from "../../common/useCryptoWebSocket";
 
 /**
  * Dashboard
@@ -101,7 +101,7 @@ export function Dashboard() {
         >
           {showCandles && (
             <div className={`w-full ${showBoth ? "lg:w-[70%]" : ""}`}>
-              <CandleChart pair={pair} updatedCandle={updatedCandle} />
+              <CryptoCandleChart pair={pair} updatedCandle={updatedCandle} />
             </div>
           )}
           {showOrderBook && (

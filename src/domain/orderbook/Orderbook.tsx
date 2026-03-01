@@ -3,8 +3,8 @@ import type {
   CryptoPair,
   OrderBook as OrderBookData,
   OrderBookEntry,
-} from "../services/apiTypes";
-import { fetchOrderBook } from "../services/cryptoApiService";
+} from "../../services/apiTypes";
+import { fetchOrderBook } from "../../services/cryptoApiService";
 
 interface OrderBookProps {
   pair: CryptoPair;

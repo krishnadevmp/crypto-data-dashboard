@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { useCandleChart } from "../common/useCandleChart";
-// import { fetchCandles } from "../services/cryptoApiService";
-import type { Candle, CryptoPair } from "../services/apiTypes";
-import { fetchCandles } from "../services/cryptoApiService";
+import { useCandleChart } from "../../common/useCandleChart";
+import type { Candle, CryptoPair } from "../../services/apiTypes";
+import { fetchCandles } from "../../services/cryptoApiService";
 
 function LoadingOverlay() {
   return (
@@ -16,7 +15,7 @@ function LoadingOverlay() {
  * The component owns data fetching.
  * The parent only needs to tell it which pair to show
  */
-export interface CandleChartProps {
+export interface CryptoCandleChartProps {
   /** The trading pair to display, e.g. "BTC-USDT". */
   pair: CryptoPair;
   updatedCandle: Candle | null;
@@ -34,15 +33,12 @@ export type FetchStatus = "idle" | "loading" | "success" | "error";
  *  1. Accepts a `pair` prop and fetches historical candles from the REST API
  *     (results are served from the client-side cache on repeat selections).
  *  2. Renders them via `useCandleChart` (lightweight-charts under the hood).
- *
- * @example
- * ```tsx
- * <CandleChart
- *   pair={selectedPair}
- * />
- * ```
+ *  3. Listens for real-time updates via the `updatedCandle` prop and applies them
  */
-export function CandleChart({ pair, updatedCandle }: CandleChartProps) {
+export function CryptoCandleChart({
+  pair,
+  updatedCandle,
+}: CryptoCandleChartProps) {
   const { containerRef, setCandles, isReady, updateCandle } = useCandleChart();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -103,4 +99,4 @@ export function CandleChart({ pair, updatedCandle }: CandleChartProps) {
   );
 }
 
-export default CandleChart;
+export default CryptoCandleChart;
