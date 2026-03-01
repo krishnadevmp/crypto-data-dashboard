@@ -4,6 +4,12 @@ import { useCandleChart } from "../common/useCandleChart";
 import type { CryptoPair } from "../services/apiTypes";
 import { fetchCandles } from "../services/cryptoApiService";
 
+function LoadingOverlay() {
+  return (
+    <div className="absolute inset-0 rounded-lg bg-slate-800 animate-pulse z-10" />
+  );
+}
+
 /**
  * Props for the CandleChart component.
  *
@@ -38,6 +44,7 @@ export type FetchStatus = "idle" | "loading" | "success" | "error";
 export function CandleChart({ pair }: CandleChartProps) {
   const { containerRef, setCandles, isReady } = useCandleChart();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // 1. Fetch historical candles whenever `pair` changes or chart becomes ready
   useEffect(() => {
@@ -50,14 +57,17 @@ export function CandleChart({ pair }: CandleChartProps) {
 
     async function load() {
       try {
+        setIsLoading(true);
         const candles = await fetchCandles(pair);
         if (cancelled) return;
 
         setCandles(candles);
+        setIsLoading(false);
       } catch (err) {
         if (cancelled) return;
         const error = err instanceof Error ? err : new Error(String(err));
         setErrorMessage("Failed to fetch candles");
+        setIsLoading(false);
         console.log(error);
       }
     }
@@ -69,13 +79,14 @@ export function CandleChart({ pair }: CandleChartProps) {
   }, [pair, isReady, setCandles]);
 
   return (
-    <div className="flex-col">
+    <div className="flex-col relative">
       <div
         className="h-[320px] sm:h-[420px] lg:h-full lg:min-h-[520px]"
         ref={containerRef}
         role="img"
         aria-label={`Candlestick chart for ${pair}`}
       />
+      {isLoading && <LoadingOverlay />}
       {errorMessage && (
         <div className="mt-2 text-xs text-red-400 text-center">
           {errorMessage}

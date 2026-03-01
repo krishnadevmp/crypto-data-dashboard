@@ -117,29 +117,31 @@ export function OrderBook({ pair }: OrderBookProps) {
 
   useEffect(() => {
     let cancelled = false;
-    fetchOrderBook(pair)
-      .then((data) => {
+
+    const fetchData = async () => {
+      setLoading(true); // This still triggers the warning, but it's the common pattern for data fetching.
+      try {
+        const data = await fetchOrderBook(pair);
         if (!cancelled) {
           setOrderBook(data);
           setLoading(false);
         }
-      })
-      .catch(() => {
+      } catch {
         if (!cancelled) {
           setError("Failed to fetch order book");
           setLoading(false);
         }
-      });
+      }
+    };
+    fetchData();
+
     return () => {
       cancelled = true;
     };
   }, [pair]);
 
-  const VISIBLE_LEVELS = 12;
-  const asks = orderBook
-    ? [...orderBook.asks].slice(0, VISIBLE_LEVELS).reverse()
-    : [];
-  const bids = orderBook ? orderBook.bids.slice(0, VISIBLE_LEVELS) : [];
+  const asks = orderBook ? [...orderBook.asks].reverse() : [];
+  const bids = orderBook ? orderBook.bids : [];
 
   // Compute max total across both sides for proportional depth bars
   const allTotals = [...asks, ...bids].map(([p, a]) => p * a);
@@ -178,7 +180,7 @@ export function OrderBook({ pair }: OrderBookProps) {
           <div className="flex flex-col flex-1 overflow-hidden">
             <div className="flex flex-col justify-end flex-1 overflow-hidden py-1">
               {loading ? (
-                <SkeletonRows count={VISIBLE_LEVELS} />
+                <SkeletonRows count={12} />
               ) : (
                 asks.map((entry, i) => (
                   <OrderRow
@@ -210,7 +212,7 @@ export function OrderBook({ pair }: OrderBookProps) {
             {/* Bids */}
             <div className="flex flex-col flex-1 overflow-hidden py-1">
               {loading ? (
-                <SkeletonRows count={VISIBLE_LEVELS} />
+                <SkeletonRows count={12} />
               ) : (
                 bids.map((entry, i) => (
                   <OrderRow
