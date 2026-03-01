@@ -70,7 +70,7 @@ export function CandleChart({ pair }: CandleChartProps) {
 
   return (
     <div
-      className="h-[420px] sm:h-[500px] lg:h-auto lg:min-h-[520px]"
+      className="h-[320px] sm:h-[420px] lg:h-full lg:min-h-[520px]"
       ref={containerRef}
       role="img"
       aria-label={`Candlestick chart for ${pair}`}
