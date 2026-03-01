@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useCandleChart } from "../common/useCandleChart";
 // import { fetchCandles } from "../services/cryptoApiService";
-import type { CryptoPair } from "../services/apiTypes";
+import type { Candle, CryptoPair } from "../services/apiTypes";
 import { fetchCandles } from "../services/cryptoApiService";
 
 function LoadingOverlay() {
@@ -19,6 +19,7 @@ function LoadingOverlay() {
 export interface CandleChartProps {
   /** The trading pair to display, e.g. "BTC-USDT". */
   pair: CryptoPair;
+  updatedCandle: Candle | null;
 }
 
 /**
@@ -41,8 +42,8 @@ export type FetchStatus = "idle" | "loading" | "success" | "error";
  * />
  * ```
  */
-export function CandleChart({ pair }: CandleChartProps) {
-  const { containerRef, setCandles, isReady } = useCandleChart();
+export function CandleChart({ pair, updatedCandle }: CandleChartProps) {
+  const { containerRef, setCandles, isReady, updateCandle } = useCandleChart();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -77,6 +78,12 @@ export function CandleChart({ pair }: CandleChartProps) {
       cancelled = true;
     };
   }, [pair, isReady, setCandles]);
+
+  useEffect(() => {
+    if (updatedCandle) {
+      updateCandle(updatedCandle);
+    }
+  }, [updatedCandle]);
 
   return (
     <div className="flex-col relative">

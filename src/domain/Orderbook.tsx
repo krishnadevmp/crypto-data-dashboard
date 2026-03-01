@@ -8,6 +8,7 @@ import { fetchOrderBook } from "../services/cryptoApiService";
 
 interface OrderBookProps {
   pair: CryptoPair;
+  updatedOrderBook: OrderBookData | null;
 }
 
 /**
@@ -110,7 +111,7 @@ function SkeletonRows({ count = 12 }: { count?: number }) {
  * Renders asks (red, sells) above a mid-price marker and bids (green, buys) below.
  * Each row has a proportional depth bar to visualize order concentration.
  */
-export function OrderBook({ pair }: OrderBookProps) {
+export function OrderBook({ pair, updatedOrderBook }: OrderBookProps) {
   const [orderBook, setOrderBook] = useState<OrderBookData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -140,14 +141,17 @@ export function OrderBook({ pair }: OrderBookProps) {
     };
   }, [pair]);
 
-  const asks = orderBook ? [...orderBook.asks].reverse() : [];
-  const bids = orderBook ? orderBook.bids : [];
+  // Use updatedOrderBook if available, otherwise fallback to fetched orderBook
+  const displayedOrderBook = updatedOrderBook ?? orderBook;
+
+  const asks = displayedOrderBook ? [...displayedOrderBook.asks].reverse() : [];
+  const bids = displayedOrderBook ? displayedOrderBook.bids : [];
 
   // Compute max total across both sides for proportional depth bars
   const allTotals = [...asks, ...bids].map(([p, a]) => p * a);
   const maxTotal = allTotals.length > 0 ? Math.max(...allTotals) : 1;
 
-  const midPrice = orderBook ? getMidPrice(orderBook) : null;
+  const midPrice = displayedOrderBook ? getMidPrice(displayedOrderBook) : null;
 
   return (
     <>
