@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useCandleChart } from "../common/useCandleChart";
 // import { fetchCandles } from "../services/cryptoApiService";
 import type { CryptoPair } from "../services/apiTypes";
@@ -37,6 +37,7 @@ export type FetchStatus = "idle" | "loading" | "success" | "error";
  */
 export function CandleChart({ pair }: CandleChartProps) {
   const { containerRef, setCandles, isReady } = useCandleChart();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // 1. Fetch historical candles whenever `pair` changes or chart becomes ready
   useEffect(() => {
@@ -56,6 +57,7 @@ export function CandleChart({ pair }: CandleChartProps) {
       } catch (err) {
         if (cancelled) return;
         const error = err instanceof Error ? err : new Error(String(err));
+        setErrorMessage("Failed to fetch candles");
         console.log(error);
       }
     }
@@ -67,12 +69,19 @@ export function CandleChart({ pair }: CandleChartProps) {
   }, [pair, isReady, setCandles]);
 
   return (
-    <div
-      className="h-[320px] sm:h-[420px] lg:h-full lg:min-h-[520px]"
-      ref={containerRef}
-      role="img"
-      aria-label={`Candlestick chart for ${pair}`}
-    />
+    <div className="flex-col">
+      <div
+        className="h-[320px] sm:h-[420px] lg:h-full lg:min-h-[520px]"
+        ref={containerRef}
+        role="img"
+        aria-label={`Candlestick chart for ${pair}`}
+      />
+      {errorMessage && (
+        <div className="mt-2 text-xs text-red-400 text-center">
+          {errorMessage}
+        </div>
+      )}
+    </div>
   );
 }
 
