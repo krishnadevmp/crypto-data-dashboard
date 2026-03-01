@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Select } from "../common/Select";
 import { CandleChart } from "./CandleChart";
 import { OrderBook } from "./Orderbook";
-import { sampleBtcUsdtOrderbook } from "../common/sampleBtcUsdt";
 import type {
   CryptoPair,
   OrderBook as OrderBookData,
@@ -12,6 +11,7 @@ import {
   STREAM_OPTIONS,
   type StreamMode,
 } from "./DashboardTypes";
+import { fetchOrderBook } from "../services/cryptoApiService";
 
 /**
  * Dashboard
@@ -31,31 +31,28 @@ export function Dashboard() {
   const [pair, setPair] = useState<CryptoPair>("BTC-USDT");
   const [streamMode, setStreamMode] = useState<StreamMode>("all");
 
-  const [orderBook] = useState<OrderBookData | null>(sampleBtcUsdtOrderbook);
-  const [orderBookLoading] = useState(false);
-  const [orderBookError] = useState<string | null>(null);
+  const [orderBook, setOrderBook] = useState<OrderBookData | null>(null);
+  const [orderBookLoading, setOrderBookLoading] = useState(false);
+  const [orderBookError, setOrderBookError] = useState<string | null>(null);
 
   useEffect(() => {
-    // let cancelled = false;
-    // setOrderBookLoading(true);
-    // setOrderBook(null);
-    // setOrderBookError(null);
-    // fetchOrderBook(pair)
-    //   .then((data) => {
-    //     if (!cancelled) {
-    //       setOrderBook(data);
-    //       setOrderBookLoading(false);
-    //     }
-    //   })
-    //   .catch((err: Error) => {
-    //     if (!cancelled) {
-    //       setOrderBookError(err.message);
-    //       setOrderBookLoading(false);
-    //     }
-    //   });
-    // return () => {
-    //   cancelled = true;
-    // };
+    let cancelled = false;
+    fetchOrderBook(pair)
+      .then((data) => {
+        if (!cancelled) {
+          setOrderBook(data);
+          setOrderBookLoading(false);
+        }
+      })
+      .catch((err: Error) => {
+        if (!cancelled) {
+          setOrderBookError(err.message);
+          setOrderBookLoading(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [pair]);
 
   const showCandles = streamMode === "all" || streamMode === "candles";
@@ -128,7 +125,7 @@ export function Dashboard() {
         `}
         >
           {showCandles && (
-            <div className={`w-full lg:w-[70%] ${showBoth ? "lg:flex-1" : ""}`}>
+            <div className={`w-full ${showBoth ? "lg:w-[70%]" : ""}`}>
               <CandleChart pair={pair} />
             </div>
           )}
@@ -136,8 +133,7 @@ export function Dashboard() {
             <div
               className={`
               flex flex-col gap-2
-              w-full lg:w-[30%]
-               ${showBoth ? "xl:w-[280px] xl:shrink-0" : ""}
+               ${showBoth ? "w-full lg:w-[30%]" : ""}
             `}
             >
               <div className="flex items-center justify-between">
