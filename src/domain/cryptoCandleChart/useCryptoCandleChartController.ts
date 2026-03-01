@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { useCandleChart } from "../../common/useCandleChart";
 import { fetchCandles } from "../../services/cryptoApiService";
 import type { Candle, CryptoPair } from "../../services/apiTypes";
+import { useCandleChart } from "../../common/hooks/useCandleChart";
 
 /**
  * Props for the CandleChart component.

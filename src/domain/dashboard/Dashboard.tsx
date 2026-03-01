@@ -1,8 +1,8 @@
-import { Select } from "../../common/Select";
+import { useCryptoWebSocket } from "../../common/hooks/useCryptoWebSocket";
+import { Select } from "../../common/components/Select";
 import { CryptoCandleChart } from "../cryptoCandleChart/CryptoCandleChart";
 import { OrderBook } from "../orderbook/Orderbook";
 import { PAIR_OPTIONS, STREAM_OPTIONS } from "./dashboardTypes";
-import { useCryptoWebSocket } from "../../common/useCryptoWebSocket";
 import { useDashboardController } from "./useDashboardController";
 
 /**

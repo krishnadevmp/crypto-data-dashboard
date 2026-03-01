@@ -4,7 +4,7 @@ import type {
   CandlestickSeriesOptions,
   HistogramSeriesOptions,
 } from "lightweight-charts";
-import type { Candle } from "../services/apiTypes";
+import type { Candle } from "../../services/apiTypes";
 
 /**
  * Options accepted by the useCandleChart hook.

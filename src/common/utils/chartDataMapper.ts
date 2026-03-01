@@ -1,5 +1,5 @@
 import type { CandlestickData, HistogramData, Time } from "lightweight-charts";
-import type { Candle } from "../services/apiTypes";
+import type { Candle } from "../../services/apiTypes";
 
 /**
  * lightweight-charts expects time as seconds (Unix timestamp in seconds).
