@@ -68,7 +68,7 @@ export function Dashboard() {
           flex-col  on mobile  → logo on top, selects below
           flex-row  from sm up → logo left, selects right on same line
       ────────────────────────────────────────────────────────────────────── */}
-      <header className="border-b border-slate-800 bg-slate-900/80 backdrop-blur-sm sticky top-0 z-20">
+      <header className="border-b border-slate-800 bg-slate-900/80 backdrop-blur-sm sticky top-0 z-20 p-2">
         <div
           className="
           max-w-screen-2xl mx-auto px-4 sm:px-6
@@ -121,48 +121,23 @@ export function Dashboard() {
             {PAIR_OPTIONS.find((p) => p.value === pair)?.label}
           </span>
         </div>
-
-        {/* ── Panel container ───────────────────────────────────────────────
-            flex-col  always        → panels stack vertically on mobile/tablet
-            lg:flex-row when both  → chart and order book sit side by side
-
-            The direction change at lg is the single breakpoint that controls
-            whether the order book is to the right of the chart (desktop) or
-            below it (mobile/tablet).
-        ─────────────────────────────────────────────────────────────────── */}
         <div
           className={`
           flex flex-col gap-4
           ${showBoth ? "lg:flex-row lg:items-stretch" : ""}
         `}
         >
-          {/* Candle chart
-              flex-1      → grows to fill all remaining horizontal space
-                            when in flex-row (desktop side-by-side).
-              w-full      → spans full width when stacked (mobile/tablet).
-              Heights: fixed on mobile, taller on tablet, auto on desktop.
-          */}
           {showCandles && (
-            <div className={`w-full ${showBoth ? "lg:flex-1" : ""}`}>
+            <div className={`w-full lg:w-[70%] ${showBoth ? "lg:flex-1" : ""}`}>
               <CandleChart pair={pair} />
             </div>
           )}
-
-          {/* Order book
-              w-full      → full width when stacked (mobile/tablet).
-              lg:w-[300px] → fixed 300 px right column on desktop.
-              lg:shrink-0 → prevents it from squeezing when chart wants more space.
-
-              This is the key responsive rule: on mobile the order book naturally
-              appears below the chart because flex-col stacks children top-to-bottom.
-              On desktop flex-row places it to the right with a fixed width.
-          */}
           {showOrderBook && (
             <div
               className={`
               flex flex-col gap-2
-              w-full
-              ${showBoth ? "lg:w-[300px] lg:shrink-0" : ""}
+              w-full lg:w-[30%]
+               ${showBoth ? "xl:w-[280px] xl:shrink-0" : ""}
             `}
             >
               <div className="flex items-center justify-between">
