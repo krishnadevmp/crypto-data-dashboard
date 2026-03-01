@@ -86,3 +86,19 @@ The main trade-off is that it is not a React-native library — it exposes an im
 **Decision: React local state (`useState`) only — no external state library.**
 
 The component tree is shallow — `Dashboard` owns `pair`, `streamMode`, and WebSocket data, passing them one level down to `CandleChart` and `OrderBook`. There is no prop drilling beyond a single level and no shared state between unrelated components, so the complexity of Redux, Zustand, or Jotai is not justified. If the app grows to include watchlists or cross-component preferences, Zustand would be the natural lightweight upgrade.
+
+## Bonus Features
+
+### Loading Indicators
+
+A pulsing skeleton placeholder is shown in the `CandleChart` panel while waiting for the first WebSocket snapshot or REST response. The state starts as `'loading'` on mount so the skeleton is visible immediately — there is no blank flash before data arrives. On the `OrderBook` side, skeleton rows are rendered while `data` is null. Both components also handle error states with an inline message.
+
+### Sophisticated Charting
+
+Zoom and pan are available out of the box via `lightweight-charts` — scroll to zoom the time axis, click and drag to pan. A "fit all" button that calls `timeScale().fitContent()` could be added as a small toolbar above the chart with minimal effort.
+
+Different timeframes (1H / 4H / 1D / 1W) are **not yet implemented**. Doing so would require the backend to accept a `?timeframe=` query parameter on `GET /api/candles/:pair`, aggregate the hourly candles into the requested resolution, and the frontend to add a timeframe selector that triggers a re-fetch. The architecture supports this — `useCandleChart` is data-agnostic and `fetchCandles` could forward the timeframe param — but the feature was out of scope for this submission.
+
+### Unit Tests
+
+Unit tests are included for key components and data handling logic, covering hooks, caching, and utility functions. Tests can be run using the provided npm scripts.
