@@ -8,6 +8,7 @@ import {
   STREAM_OPTIONS,
   type StreamMode,
 } from "./DashboardTypes";
+import { useCryptoWebSocket } from "../common/useCryptoWebSocket";
 
 /**
  * Dashboard
@@ -26,6 +27,7 @@ import {
 
 export function Dashboard() {
   const [pair, setPair] = useState<CryptoPair>("BTC-USDT");
+  const { updatedCandle, orderBook } = useCryptoWebSocket(pair);
   const [streamMode, setStreamMode] = useState<StreamMode>("all");
 
   const showCandles = streamMode === "all" || streamMode === "candles";
@@ -99,7 +101,7 @@ export function Dashboard() {
         >
           {showCandles && (
             <div className={`w-full ${showBoth ? "lg:w-[70%]" : ""}`}>
-              <CandleChart pair={pair} />
+              <CandleChart pair={pair} updatedCandle={updatedCandle} />
             </div>
           )}
           {showOrderBook && (
@@ -109,7 +111,7 @@ export function Dashboard() {
                ${showBoth ? "w-full lg:w-[30%]" : ""}
             `}
             >
-              <OrderBook pair={pair} />
+              <OrderBook pair={pair} updatedOrderBook={orderBook} />
             </div>
           )}
         </div>
