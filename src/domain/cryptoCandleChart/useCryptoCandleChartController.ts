@@ -1,14 +1,7 @@
 import { useEffect, useState } from "react";
-import { useCandleChart } from "../common/useCandleChart";
-// import { fetchCandles } from "../services/cryptoApiService";
-import type { Candle, CryptoPair } from "../services/apiTypes";
-import { fetchCandles } from "../services/cryptoApiService";
-
-function LoadingOverlay() {
-  return (
-    <div className="absolute inset-0 rounded-lg bg-slate-800 animate-pulse z-10" />
-  );
-}
+import { fetchCandles } from "../../services/cryptoApiService";
+import type { Candle, CryptoPair } from "../../services/apiTypes";
+import { useCandleChart } from "../../common/hooks/useCandleChart";
 
 /**
  * Props for the CandleChart component.
@@ -16,33 +9,16 @@ function LoadingOverlay() {
  * The component owns data fetching.
  * The parent only needs to tell it which pair to show
  */
-export interface CandleChartProps {
+export interface CryptoCandleChartProps {
   /** The trading pair to display, e.g. "BTC-USDT". */
   pair: CryptoPair;
   updatedCandle: Candle | null;
 }
 
-/**
- * Internal fetch state managed inside CandleChart.
- */
-export type FetchStatus = "idle" | "loading" | "success" | "error";
-
-/**
- * CandleChart
- *
- * A self-contained UI component that:
- *  1. Accepts a `pair` prop and fetches historical candles from the REST API
- *     (results are served from the client-side cache on repeat selections).
- *  2. Renders them via `useCandleChart` (lightweight-charts under the hood).
- *
- * @example
- * ```tsx
- * <CandleChart
- *   pair={selectedPair}
- * />
- * ```
- */
-export function CandleChart({ pair, updatedCandle }: CandleChartProps) {
+const useCryptoCandleChartController = ({
+  pair,
+  updatedCandle,
+}: CryptoCandleChartProps) => {
   const { containerRef, setCandles, isReady, updateCandle } = useCandleChart();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -85,22 +61,13 @@ export function CandleChart({ pair, updatedCandle }: CandleChartProps) {
     }
   }, [updatedCandle]);
 
-  return (
-    <div className="flex-col relative">
-      <div
-        className="h-[320px] sm:h-[420px] lg:h-full lg:min-h-[520px]"
-        ref={containerRef}
-        role="img"
-        aria-label={`Candlestick chart for ${pair}`}
-      />
-      {isLoading && <LoadingOverlay />}
-      {errorMessage && (
-        <div className="mt-2 text-xs text-red-400 text-center">
-          {errorMessage}
-        </div>
-      )}
-    </div>
-  );
-}
+  return {
+    state: {
+      containerRef,
+      isLoading,
+      errorMessage,
+    },
+  };
+};
 
-export default CandleChart;
+export default useCryptoCandleChartController;

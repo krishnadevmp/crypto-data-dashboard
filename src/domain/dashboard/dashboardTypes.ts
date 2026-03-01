@@ -1,4 +1,4 @@
-import type { CryptoPair } from "../services/apiTypes";
+import type { CryptoPair } from "../../services/apiTypes";
 
 /** The three stream modes exposed in the UI dropdown. */
 export type StreamMode = "all" | "candles" | "orderbook";

@@ -1,14 +1,9 @@
-import { useState } from "react";
-import { Select } from "../common/Select";
-import { CandleChart } from "./CandleChart";
-import { OrderBook } from "./Orderbook";
-import type { CryptoPair } from "../services/apiTypes";
-import {
-  PAIR_OPTIONS,
-  STREAM_OPTIONS,
-  type StreamMode,
-} from "./DashboardTypes";
-import { useCryptoWebSocket } from "../common/useCryptoWebSocket";
+import { useCryptoWebSocket } from "../../common/hooks/useCryptoWebSocket";
+import { Select } from "../../common/components/Select";
+import { CryptoCandleChart } from "../cryptoCandleChart/CryptoCandleChart";
+import { OrderBook } from "../orderbook/Orderbook";
+import { PAIR_OPTIONS, STREAM_OPTIONS } from "./dashboardTypes";
+import { useDashboardController } from "./useDashboardController";
 
 /**
  * Dashboard
@@ -26,13 +21,11 @@ import { useCryptoWebSocket } from "../common/useCryptoWebSocket";
  */
 
 export function Dashboard() {
-  const [pair, setPair] = useState<CryptoPair>("BTC-USDT");
+  const {
+    state: { pair, streamMode, showCandles, showOrderBook, showBoth },
+    handler: { handlePairChange, handleStreamModeChange },
+  } = useDashboardController();
   const { updatedCandle, orderBook } = useCryptoWebSocket(pair);
-  const [streamMode, setStreamMode] = useState<StreamMode>("all");
-
-  const showCandles = streamMode === "all" || streamMode === "candles";
-  const showOrderBook = streamMode === "all" || streamMode === "orderbook";
-  const showBoth = showCandles && showOrderBook;
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
@@ -67,7 +60,7 @@ export function Dashboard() {
                 label="Pair"
                 value={pair}
                 options={PAIR_OPTIONS}
-                onChange={setPair}
+                onChange={handlePairChange}
               />
             </div>
             <div className="flex-1 sm:flex-none sm:w-56">
@@ -75,7 +68,7 @@ export function Dashboard() {
                 label="Stream"
                 value={streamMode}
                 options={STREAM_OPTIONS}
-                onChange={setStreamMode}
+                onChange={handleStreamModeChange}
               />
             </div>
           </div>
@@ -101,7 +94,7 @@ export function Dashboard() {
         >
           {showCandles && (
             <div className={`w-full ${showBoth ? "lg:w-[70%]" : ""}`}>
-              <CandleChart pair={pair} updatedCandle={updatedCandle} />
+              <CryptoCandleChart pair={pair} updatedCandle={updatedCandle} />
             </div>
           )}
           {showOrderBook && (

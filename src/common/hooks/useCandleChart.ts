@@ -11,13 +11,13 @@ import {
   type ChartOptions,
 } from "lightweight-charts";
 
-import type { Candle } from "../services/apiTypes";
+import type { Candle } from "../../services/apiTypes";
 import type { UseCandleChartOptions, UseCandleChartReturn } from "./chartTypes";
 import {
   mapCandlesToSeriesData,
   toCandlestickData,
   toVolumeData,
-} from "./chartDataMapper";
+} from "../utils/chartDataMapper";
 
 const DEFAULT_CHART_OPTIONS: DeepPartial<ChartOptions> = {
   layout: {

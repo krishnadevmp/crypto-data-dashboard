@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type { Candle, CryptoPair, OrderBook } from "../services/apiTypes";
+import type { Candle, CryptoPair, OrderBook } from "../../services/apiTypes";
 
 interface SubscribePayload {
   type: "subscribe" | "unsubscribe";

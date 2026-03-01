@@ -1,50 +1,9 @@
-import { useEffect, useState } from "react";
-import type {
-  CryptoPair,
-  OrderBook as OrderBookData,
-  OrderBookEntry,
-} from "../services/apiTypes";
-import { fetchOrderBook } from "../services/cryptoApiService";
-
-interface OrderBookProps {
-  pair: CryptoPair;
-  updatedOrderBook: OrderBookData | null;
-}
-
-/**
- * Compute mid-price between best ask and best bid.
- */
-function getMidPrice(data: OrderBookData): number {
-  const bestAsk = data.asks[0]?.[0] ?? 0;
-  const bestBid = data.bids[0]?.[0] ?? 0;
-  return (bestAsk + bestBid) / 2;
-}
-
-/**
- * Format a price value with appropriate decimal places.
- */
-function formatPrice(price: number): string {
-  const decimals = price >= 100 ? 2 : price >= 1 ? 3 : 5;
-  return price.toLocaleString(undefined, {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  });
-}
-
-function formatAmount(amount: number): string {
-  return amount.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 4,
-  });
-}
-
-function formatTotal(price: number, amount: number): string {
-  const total = price * amount;
-  return total.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-}
+import type { OrderBook, OrderBookEntry } from "../../services/apiTypes";
+import {
+  useOrderbookController,
+  type OrderBookProps,
+} from "./useOrderbookController";
+import { formatAmount, formatPrice, formatTotal, getMidPrice } from "./utils";
 
 /**
  * A single row in the order book with a depth-bar background.
@@ -112,37 +71,9 @@ function SkeletonRows({ count = 12 }: { count?: number }) {
  * Each row has a proportional depth bar to visualize order concentration.
  */
 export function OrderBook({ pair, updatedOrderBook }: OrderBookProps) {
-  const [orderBook, setOrderBook] = useState<OrderBookData | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    const fetchData = async () => {
-      setLoading(true); // This still triggers the warning, but it's the common pattern for data fetching.
-      try {
-        const data = await fetchOrderBook(pair);
-        if (!cancelled) {
-          setOrderBook(data);
-          setLoading(false);
-        }
-      } catch {
-        if (!cancelled) {
-          setError("Failed to fetch order book");
-          setLoading(false);
-        }
-      }
-    };
-    fetchData();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [pair]);
-
-  // Use updatedOrderBook if available, otherwise fallback to fetched orderBook
-  const displayedOrderBook = updatedOrderBook ?? orderBook;
+  const {
+    state: { displayedOrderBook, loading, error },
+  } = useOrderbookController({ pair, updatedOrderBook });
 
   const asks = displayedOrderBook ? [...displayedOrderBook.asks].reverse() : [];
   const bids = displayedOrderBook ? displayedOrderBook.bids : [];
