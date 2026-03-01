@@ -1,46 +1,9 @@
-import type {
-  OrderBook as OrderBookData,
-  OrderBookEntry,
-} from "../../services/apiTypes";
+import type { OrderBook, OrderBookEntry } from "../../services/apiTypes";
 import {
   useOrderbookController,
   type OrderBookProps,
 } from "./useOrderbookController";
-
-/**
- * Compute mid-price between best ask and best bid.
- */
-function getMidPrice(data: OrderBookData): number {
-  const bestAsk = data.asks[0]?.[0] ?? 0;
-  const bestBid = data.bids[0]?.[0] ?? 0;
-  return (bestAsk + bestBid) / 2;
-}
-
-/**
- * Format a price value with appropriate decimal places.
- */
-function formatPrice(price: number): string {
-  const decimals = price >= 100 ? 2 : price >= 1 ? 3 : 5;
-  return price.toLocaleString(undefined, {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  });
-}
-
-function formatAmount(amount: number): string {
-  return amount.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 4,
-  });
-}
-
-function formatTotal(price: number, amount: number): string {
-  const total = price * amount;
-  return total.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-}
+import { formatAmount, formatPrice, formatTotal, getMidPrice } from "./utils";
 
 /**
  * A single row in the order book with a depth-bar background.
