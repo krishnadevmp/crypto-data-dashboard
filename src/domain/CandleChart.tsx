@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useCandleChart } from "../common/useCandleChart";
 // import { fetchCandles } from "../services/cryptoApiService";
 import type { CryptoPair } from "../services/apiTypes";
-import { sampleBtcUsdt } from "../common/sampleBtcUsdt";
+import { sampleBtcUsdtCandleData } from "../common/sampleBtcUsdt";
 
 /**
  * Props for the CandleChart component.
@@ -51,7 +51,7 @@ export function CandleChart({ pair }: CandleChartProps) {
       try {
         // ToDo: swap this out with the real API call once the backend is up and running
         // const candles = await fetchCandles(pair);
-        const candles = sampleBtcUsdt;
+        const candles = sampleBtcUsdtCandleData;
         if (cancelled) return;
 
         setCandles(candles);

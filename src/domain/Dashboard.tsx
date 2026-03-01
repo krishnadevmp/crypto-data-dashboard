@@ -1,5 +1,8 @@
-import { useState } from "react";
-import type { CryptoPair } from "../services/apiTypes";
+import { useState, useEffect } from "react";
+import type {
+  CryptoPair,
+  OrderBook as OrderBookData,
+} from "../services/apiTypes";
 import {
   PAIR_OPTIONS,
   STREAM_OPTIONS,
@@ -7,15 +10,44 @@ import {
 } from "./DashboardTypes";
 import { Select } from "../common/Select";
 import { CandleChart } from "./CandleChart";
+import { OrderBook } from "./Orderbook";
+import { sampleBtcUsdtOrderbook } from "../common/sampleBtcUsdt";
 
 /**
  * Dashboard page.
  *
  * Owns the selected pair and stream mode state.
+ * Fetches the order book snapshot via REST whenever the pair changes.
+ * Passes data down to CandleChart and OrderBook — no WebSocket wiring yet.
  */
 export function Dashboard() {
   const [pair, setPair] = useState<CryptoPair>("BTC-USDT");
   const [streamMode, setStreamMode] = useState<StreamMode>("all");
+
+  const [orderBook] = useState<OrderBookData | null>(sampleBtcUsdtOrderbook);
+  const [orderBookLoading] = useState(false);
+  const [orderBookError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Todo: Call the real API once it's ready.
+    // let cancelled = false;
+    // fetchOrderBook(pair)
+    //   .then((data) => {
+    //     if (!cancelled) {
+    //       setOrderBook(data);
+    //       setOrderBookLoading(false);
+    //     }
+    //   })
+    //   .catch((err: Error) => {
+    //     if (!cancelled) {
+    //       setOrderBookError(err.message);
+    //       setOrderBookLoading(false);
+    //     }
+    //   });
+    // return () => {
+    //   cancelled = true;
+    // };
+  }, [pair]);
 
   const showCandles = streamMode === "all" || streamMode === "candles";
   const showOrderBook = streamMode === "all" || streamMode === "orderbook";
@@ -84,7 +116,16 @@ export function Dashboard() {
                 </span>
                 <span className="text-xs text-slate-600">{pair}</span>
               </div>
-              // Order book here
+
+              {orderBookError ? (
+                <div className="flex-1 flex items-center justify-center rounded-lg border border-slate-800 bg-slate-900 p-6">
+                  <p className="text-xs text-red-400 text-center">
+                    {orderBookError}
+                  </p>
+                </div>
+              ) : (
+                <OrderBook data={orderBook} loading={orderBookLoading} />
+              )}
             </div>
           )}
         </div>
