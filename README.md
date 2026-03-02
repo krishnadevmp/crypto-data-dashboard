@@ -62,7 +62,7 @@ npm run lint
 
 No mock backend was provided with the brief, so a custom Node.js + Express mock server was built to satisfy the API contract. The server lives in a separate repository and is required to be running locally before starting the frontend.
 
-**Repository:** `https://github.com/krishnadevmp/crypto-data-dashboard-service`
+**Repository:** [Crypto Data Dashboard Service](https://github.com/krishnadevmp/crypto-data-dashboard-service)
 
 The mock server provides:
 - `GET /api/candles/:pair` — returns 60 hourly OHLCV candles generated with a seeded random walk, so the same pair always produces the same price history across restarts.
