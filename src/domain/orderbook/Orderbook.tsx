@@ -3,7 +3,7 @@ import {
   useOrderbookController,
   type OrderBookProps,
 } from "./useOrderbookController";
-import { formatAmount, formatPrice, formatTotal, getMidPrice } from "./utils";
+import { formatAmount, formatPrice, formatTotal } from "./utils";
 
 /**
  * A single row in the order book with a depth-bar background.
@@ -72,17 +72,8 @@ function SkeletonRows({ count = 12 }: { count?: number }) {
  */
 export function OrderBook({ pair, updatedOrderBook }: OrderBookProps) {
   const {
-    state: { displayedOrderBook, loading, error },
+    state: { asks, bids, maxTotal, midPrice, loading, error },
   } = useOrderbookController({ pair, updatedOrderBook });
-
-  const asks = displayedOrderBook ? [...displayedOrderBook.asks].reverse() : [];
-  const bids = displayedOrderBook ? displayedOrderBook.bids : [];
-
-  // Compute max total across both sides for proportional depth bars
-  const allTotals = [...asks, ...bids].map(([p, a]) => p * a);
-  const maxTotal = allTotals.length > 0 ? Math.max(...allTotals) : 1;
-
-  const midPrice = displayedOrderBook ? getMidPrice(displayedOrderBook) : null;
 
   return (
     <>
