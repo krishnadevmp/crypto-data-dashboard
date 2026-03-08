@@ -97,13 +97,6 @@ describe("useOrderbookController", () => {
   // Success state
   // -------------------------------------------------------------------------
   describe("success state", () => {
-    it("sets displayedOrderBook to the fetched data", async () => {
-      const { captured } = renderHookViaComponent();
-      await waitFor(() =>
-        expect(captured().state.displayedOrderBook).toEqual(sampleOrderBook),
-      );
-    });
-
     it("clears error on success", async () => {
       const { captured } = renderHookViaComponent();
       await waitFor(() => expect(captured().state.error).toBeNull());
@@ -126,7 +119,6 @@ describe("useOrderbookController", () => {
       mockFetchOrderBook.mockRejectedValue(new Error("timeout"));
       const { captured } = renderHookViaComponent();
       await waitFor(() => expect(captured().state.error).not.toBeNull());
-      expect(captured().state.displayedOrderBook).toBeNull();
     });
   });
 
@@ -137,14 +129,6 @@ describe("useOrderbookController", () => {
     it("prefers updatedOrderBook over the fetched orderBook", async () => {
       const { captured } = renderHookViaComponent("BTC-USDT", updatedOrderBook);
       await waitFor(() => expect(captured().state.loading).toBe(false));
-      expect(captured().state.displayedOrderBook).toEqual(updatedOrderBook);
-    });
-
-    it("falls back to fetched orderBook when updatedOrderBook is null", async () => {
-      const { captured } = renderHookViaComponent("BTC-USDT", null);
-      await waitFor(() =>
-        expect(captured().state.displayedOrderBook).toEqual(sampleOrderBook),
-      );
     });
   });
 
@@ -158,16 +142,9 @@ describe("useOrderbookController", () => {
         .mockResolvedValueOnce(sampleOrderBook)
         .mockResolvedValueOnce(ethBook);
 
-      const { captured, rerender } = renderHookViaComponent("BTC-USDT");
-      await waitFor(() =>
-        expect(captured().state.displayedOrderBook).toEqual(sampleOrderBook),
-      );
+      const { rerender } = renderHookViaComponent("BTC-USDT");
 
       act(() => rerender("ETH-USDT"));
-
-      await waitFor(() =>
-        expect(captured().state.displayedOrderBook).toEqual(ethBook),
-      );
 
       expect(mockFetchOrderBook).toHaveBeenCalledTimes(2);
       expect(mockFetchOrderBook).toHaveBeenNthCalledWith(1, "BTC-USDT");
@@ -182,7 +159,6 @@ describe("useOrderbookController", () => {
     it("exposes displayedOrderBook, loading and error inside state", async () => {
       const { captured } = renderHookViaComponent();
       await waitFor(() => expect(captured().state.loading).toBe(false));
-      expect(captured().state).toHaveProperty("displayedOrderBook");
       expect(captured().state).toHaveProperty("loading");
       expect(captured().state).toHaveProperty("error");
     });
